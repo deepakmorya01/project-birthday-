@@ -143,12 +143,13 @@ export function MemoryJourneyScene({ isActive }: SceneComponentProps) {
                   border: '1px solid rgba(233,177,58,0.25)',
                 }}
               >
-                <div
-  className="relative w-full max-w-[340px] mx-auto overflow-hidden rounded-2xl"
-  style={{
-    height: "620px",
-  }}
->
+               <div className="relative w-full flex justify-center">
+  <motion.img
+    src={current.src}
+    alt={current.alt}
+    className="max-h-[70vh] w-auto max-w-full rounded-2xl object-contain"
+  />
+</div>
                   <motion.img
                     src={current.src}
                     alt={current.alt}
