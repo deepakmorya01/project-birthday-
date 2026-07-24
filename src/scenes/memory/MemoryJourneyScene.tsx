@@ -143,7 +143,12 @@ export function MemoryJourneyScene({ isActive }: SceneComponentProps) {
                   border: '1px solid rgba(233,177,58,0.25)',
                 }}
               >
-                <div className="relative aspect-[9/16] w-full max-w-[340px] mx-auto overflow-hidden rounded-2xl">
+                <div
+  className="relative w-full max-w-[340px] mx-auto overflow-hidden rounded-2xl"
+  style={{
+    height: "620px",
+  }}
+>
                   <motion.img
                     src={current.src}
                     alt={current.alt}
