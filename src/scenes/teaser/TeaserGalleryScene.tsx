@@ -66,18 +66,20 @@ export function TeaserGalleryScene({ isActive }: SceneComponentProps) {
         style={{ minHeight: 'clamp(400px, 65vh, 700px)' }}
       >
         <Suspense fallback={null}>
-          <DomeGallery
-            images={domeImages}
-            fit={0.8}
-            fitBasis="auto"
-            minRadius={600}
-            segments={34}
-            dragDampening={2}
-            maxVerticalRotationDeg={0}
-            grayscale={false}
-            overlayBlurColor="#120F17"
-          />
-        </Suspense>
+  <div className="w-full h-[650px] relative">
+    <DomeGallery
+      images={domeImages}
+      fit={0.8}
+      fitBasis="auto"
+      minRadius={600}
+      segments={34}
+      dragDampening={2}
+      maxVerticalRotationDeg={0}
+      grayscale={false}
+      overlayBlurColor="#120F17"
+    />
+  </div>
+</Suspense>
       </div>
 
       <AnimatePresence>
