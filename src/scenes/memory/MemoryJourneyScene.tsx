@@ -5,6 +5,7 @@ import type { SceneComponentProps } from '../../types';
 import { useSceneManagerContext } from '../../hooks';
 import { ParticleField } from '../../components';
 import { getMemoryImages } from '../../config/images';
+import Waves from '../../components/effects/Waves/Waves';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const TRANSITION_DURATION = 0.6;
@@ -93,6 +94,7 @@ export function MemoryJourneyScene({ isActive }: SceneComponentProps) {
   );
 
   const current = images[currentIndex];
+  const hasImages = images.length > 0;
 
   const slideVariants = {
     enter: (dir: number) => ({ x: dir > 0 ? 40 : -40, opacity: 0, scale: 1.04 }),
@@ -112,10 +114,31 @@ export function MemoryJourneyScene({ isActive }: SceneComponentProps) {
     >
       <div className="absolute inset-0 bg-gradient-to-b from-void-950 via-void-900 to-void-950" />
       <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(233,177,58,0.05), transparent 60%)' }} />
+
+      {/* React Bits Waves — animated background layer */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <Waves
+          lineColor="rgba(255,255,255,0.08)"
+          backgroundColor="transparent"
+          waveSpeedX={0.008}
+          waveSpeedY={0.004}
+          waveAmpX={18}
+          waveAmpY={10}
+          friction={0.93}
+          tension={0.008}
+          maxCursorMove={60}
+          xGap={20}
+          yGap={42}
+        />
+      </div>
+
+      {/* Soft overlay for readability */}
+      <div className="pointer-events-none absolute inset-0 z-10 bg-black/35" />
+
       <ParticleField count={35} />
 
       <motion.div
-        className="relative z-10 mb-6 text-center"
+        className="relative z-20 mb-6 text-center"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: navigating ? 0 : 1, y: 0 }}
         transition={{ duration: 0.8, ease: EASE }}
@@ -123,7 +146,8 @@ export function MemoryJourneyScene({ isActive }: SceneComponentProps) {
         <p className="font-body text-xs sm:text-sm tracking-[0.3em] text-gold-300/70 uppercase">Memory Journey</p>
       </motion.div>
 
-      <div className="relative z-10 flex w-full max-w-3xl flex-1 flex-col items-center justify-center">
+      {hasImages ? (
+      <div className="relative z-20 flex w-full max-w-3xl flex-1 flex-col items-center justify-center">
         <div className="relative w-full" style={{ minHeight: 'clamp(360px, 55vh, 560px)' }}>
           <AnimatePresence custom={direction} mode="wait">
             <motion.div
@@ -137,33 +161,24 @@ export function MemoryJourneyScene({ isActive }: SceneComponentProps) {
               className="absolute inset-0 flex flex-col items-center"
             >
               <div
-                className="relative w-full max-w-2xl overflow-hidden rounded-2xl"
+                className="relative flex items-center justify-center overflow-hidden rounded-2xl"
                 style={{
                   boxShadow: '0 0 40px rgba(233,177,58,0.2), 0 16px 50px rgba(0,0,0,0.6)',
                   border: '1px solid rgba(233,177,58,0.25)',
                 }}
               >
-               <div className="relative w-full flex justify-center">
-  <motion.img
-    src={current.src}
-    alt={current.alt}
-    className="max-h-[70vh] w-auto max-w-full rounded-2xl object-contain"
-  />
-</div>
-                  <motion.img
-                    src={current.src}
-                    alt={current.alt}
-                    className="h-full w-full object-cover"
-                    draggable={false}
-                    animate={{ scale: [1, 1.04, 1] }}
-                    transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-                    onError={(e) => {
-                      e.currentTarget.style.background = 'linear-gradient(135deg, #1a1a2e, #16213e, #0f1a30)';
-                      e.currentTarget.style.opacity = '0.7';
-                    }}
-                  />
-                  <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 50%, transparent 40%, rgba(5,5,8,0.4) 100%)' }} />
-                </div>
+                <motion.img
+                  src={current.src}
+                  alt={current.alt}
+                  className="h-auto w-auto max-w-full object-contain max-h-[65vh] sm:max-h-[70vh]"
+                  style={{ display: 'block' }}
+                  draggable={false}
+                  animate={{ scale: [1, 1.04, 1] }}
+                  transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
               </div>
 
               <motion.p
@@ -206,6 +221,17 @@ export function MemoryJourneyScene({ isActive }: SceneComponentProps) {
           </div>
         )}
       </div>
+      ) : (
+        <motion.div
+          className="relative z-20 flex w-full max-w-3xl flex-1 flex-col items-center justify-center gap-3 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: navigating ? 0 : 1 }}
+          transition={{ duration: 1, ease: EASE }}
+        >
+          <div className="h-12 w-12 rounded-full border-2 border-gold-300/20 border-t-gold-300/60 animate-spin" />
+          <p className="font-body text-sm text-void-300">Memory photos coming soon</p>
+        </motion.div>
+      )}
 
       <AnimatePresence>
         {showFinal && (
@@ -218,7 +244,7 @@ export function MemoryJourneyScene({ isActive }: SceneComponentProps) {
           >
             <div className="absolute inset-0 bg-void-950/80 backdrop-blur-sm" />
             <motion.div
-              className="relative z-10 text-center px-6"
+              className="relative z-20 text-center px-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, ease: EASE }}
